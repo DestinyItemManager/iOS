@@ -21,18 +21,14 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     }
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     
-    let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
-    
-    setCustomCookie(webView: webView)
-    
     // Append the safari UA to the end so that Stadia (Google login) works.
     // https://github.com/pwa-builder/pwabuilder-ios/issues/30
     // Also, appending STANDALONE because window.navigator.standalone can't bet set.
-    webView.evaluateJavaScript("navigator.userAgent") { [weak webView] (result, error) in
-        if let webView = webView, let userAgent = result as? String {
-            webView.customUserAgent = userAgent + " Version/15.0 Mobile/15E148 Safari/604.1 STANDALONE"
-        }
-    }
+    config.applicationNameForUserAgent = "Safari/604.1 STANDALONE"
+    
+    let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
+    
+    setCustomCookie(webView: webView)
     
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
@@ -53,7 +49,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
 }
 
 func setAppStoreAsReferrer(contentController: WKUserContentController) {
-    let scriptSource = "document.referrer = `app-info://platform/ios-store`;"
+    let scriptSource = "document.referrer = `app-info://platform/ios-store`; navigator.standalone = true;"
     let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
     contentController.addUserScript(script);
 }
