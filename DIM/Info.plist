@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -26,11 +30,11 @@
 			<key>CFBundleURLName</key>
 			<string></string>
 			<key>CFBundleURLSchemes</key>
-			<array />
+			<array/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -90,11 +94,15 @@
 	<true/>
 	<key>WKAppBoundDomains</key>
 	<array>
-		<string>app.destinyitemmanager.com/index.html?utm_source=homescreen</string>
-	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<string>app.destinyitemmanager.com</string>
+		<string>www.bungie.net</string>
+		<string>login.live.com</string>
+		<string>ca.account.sony.com</string>
+		<string>my.account.sony.com</string>
+		<string>steamcommunity.com</string>
+		<string>id.twitch.tv</string>
+		<string>accounts.google.com</string>
+		<string>accounts.youtube.com</string>
 	</array>
 </dict>
 </plist>
