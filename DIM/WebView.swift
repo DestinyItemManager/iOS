@@ -39,7 +39,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     webView.navigationDelegate = WKND;
 
     webView.scrollView.bounces = false;
-    webView.allowsBackForwardNavigationGestures = true
+    webView.allowsBackForwardNavigationGestures = false
     
 
     webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -180,7 +180,7 @@ extension ViewController: WKUIDelegate {
                             decisionHandler(.cancel)
                             return;
                         }
-                        
+
                         if (navigationAction.navigationType == .other &&
                             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
                             (navigationAction.targetFrame != nil)
