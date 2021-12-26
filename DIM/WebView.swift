@@ -22,7 +22,12 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
+
+    // Append the safari UA to the end so that Stadia (Google login) works.
+    // https://github.com/pwa-builder/pwabuilder-ios/issues/30
+    config.applicationNameForUserAgent = "Safari/604.1"
     
+
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     
     setCustomCookie(webView: webView)
@@ -170,6 +175,12 @@ extension ViewController: WKUIDelegate {
                         return
                     }
                     else {
+                        let ignoreHost = ignoreOrigins.first(where: { requestHost.range(of: $0) != nil })
+                        if (ignoreHost != nil) {
+                            decisionHandler(.cancel)
+                            return;
+                        }
+                        
                         if (navigationAction.navigationType == .other &&
                             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
                             (navigationAction.targetFrame != nil)
