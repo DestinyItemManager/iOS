@@ -7,6 +7,9 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:app.destinyitemmanager.com</string>
+		<string>applinks:beta.destinyitemmanager.com</string>
+		<string>applinks:app.dim.gg</string>
+		<string>applinks:beta.dim.gg</string>
 	</array>
 </dict>
 </plist>
