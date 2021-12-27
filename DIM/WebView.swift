@@ -246,4 +246,42 @@ extension ViewController: WKUIDelegate {
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
+    
+    func webView(_ webView: WKWebView,
+        runJavaScriptConfirmPanelWithMessage message: String,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping (Bool) -> Void) {
+
+        // Set the message as the UIAlertController message
+        let alert = UIAlertController(
+            title: nil,
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        // Add a confirmation action “Cancel”
+        let cancelAction = UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+                // Call completionHandler
+                completionHandler(false)
+            }
+        )
+        
+        // Add a confirmation action “OK”
+        let okAction = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { _ in
+                // Call completionHandler
+                completionHandler(true)
+            }
+        )
+        alert.addAction(cancelAction)
+        alert.addAction(okAction)
+
+        // Display the NSAlert
+        present(alert, animated: true, completion: nil)
+    }
 }
