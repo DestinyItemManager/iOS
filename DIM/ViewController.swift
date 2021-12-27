@@ -19,9 +19,9 @@ class ViewController: UIViewController, WKNavigationDelegate {
     var htmlIsLoaded = false;
     
     
-//    override var preferredStatusBarStyle : UIStatusBarStyle {
-//        return statusBarStyle;
-//    }
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return statusBarStyle;
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

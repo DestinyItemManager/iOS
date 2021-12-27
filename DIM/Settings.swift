@@ -26,4 +26,4 @@ let platformCookie = Cookie(name: "app-platform", value: "iOS App Store")
 let displayMode = "fullscreen" //standalone / fullscreen
 
 //let statusBarColor = "#FFFFFF"
-//let statusBarStyle = UIStatusBarStyle.lightContent
+let statusBarStyle = UIStatusBarStyle.lightContent
