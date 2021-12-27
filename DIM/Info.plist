@@ -106,5 +106,7 @@
 		<string>accounts.google.com</string>
 		<string>accounts.youtube.com</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
