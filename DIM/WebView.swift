@@ -81,13 +81,16 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
         
         switch displayMode {
         case "fullscreen":
+            statusBarHeight = 0
             #if targetEnvironment(macCatalyst)
                 if let titlebar = windowScene.titlebar {
                     titlebar.titleVisibility = .hidden
                     titlebar.toolbar = nil
+                    statusBarHeight = 26
                 }
             #endif
-            return CGRect(x: 0, y: 0, width: webviewView.frame.width, height: webviewView.frame.height)
+            let windowHeight = webviewView.frame.height - statusBarHeight
+            return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: windowHeight)
         default:
             #if targetEnvironment(macCatalyst)
             statusBarHeight = 29
