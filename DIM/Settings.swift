@@ -23,6 +23,7 @@ let ignoreOrigins: [String] = ["tr.snapchat.com", "syndication.twitter.com", "st
 
 let platformCookie = Cookie(name: "app-platform", value: "iOS App Store")
 
+let displayMode = "fullscreen" //standalone / fullscreen
 
 //let statusBarColor = "#FFFFFF"
 //let statusBarStyle = UIStatusBarStyle.lightContent

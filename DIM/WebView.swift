@@ -20,16 +20,18 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
         
     }
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
+    config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
-    
+
     // Append the safari UA to the end so that Stadia (Google login) works.
     // https://github.com/pwa-builder/pwabuilder-ios/issues/30
     config.applicationNameForUserAgent = "Safari/604.1"
     
+
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     
     setCustomCookie(webView: webView)
-    
+
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
     webView.isHidden = true;
@@ -41,6 +43,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     
 
     webView.scrollView.contentInsetAdjustmentBehavior = .never
+
 
     webView.addObserver(NSO, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: NSKeyValueObservingOptions.new, context: nil)
     
@@ -74,9 +77,24 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
     else {
         let winScene = UIApplication.shared.connectedScenes.first
         let windowScene = winScene as! UIWindowScene
-        let statusBarHeight = windowScene.statusBarManager?.statusBarFrame.height ?? 0
+        var statusBarHeight = windowScene.statusBarManager?.statusBarFrame.height ?? 0
         
-        return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: webviewView.frame.height - statusBarHeight)
+        switch displayMode {
+        case "fullscreen":
+            #if targetEnvironment(macCatalyst)
+                if let titlebar = windowScene.titlebar {
+                    titlebar.titleVisibility = .hidden
+                    titlebar.toolbar = nil
+                }
+            #endif
+            return CGRect(x: 0, y: 0, width: webviewView.frame.width, height: webviewView.frame.height)
+        default:
+            #if targetEnvironment(macCatalyst)
+            statusBarHeight = 29
+            #endif
+            let windowHeight = webviewView.frame.height - statusBarHeight
+            return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: windowHeight)
+        }
     }
 }
 
@@ -152,7 +170,7 @@ extension ViewController: WKUIDelegate {
                         decisionHandler(.allow)
                         if (toolbarView.isHidden) {
                             toolbarView.isHidden = false
-                            webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)   
+                            webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
                         }
                         return
                     }
@@ -162,7 +180,7 @@ extension ViewController: WKUIDelegate {
                             decisionHandler(.cancel)
                             return;
                         }
-                        
+
                         if (navigationAction.navigationType == .other &&
                             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
                             (navigationAction.targetFrame != nil)
