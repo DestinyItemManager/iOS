@@ -23,9 +23,11 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
 
+    #if !targetEnvironment(macCatalyst)
     // Append the safari UA to the end so that Stadia (Google login) works.
     // https://github.com/pwa-builder/pwabuilder-ios/issues/30
     config.applicationNameForUserAgent = "Safari/604.1"
+    #endif
     
 
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)

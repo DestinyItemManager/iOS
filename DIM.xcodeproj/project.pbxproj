@@ -19,6 +19,7 @@
 		595F23AF25CEFBFE0053416C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A425CEFBFE0053416C /* WebView.swift */; };
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
 		CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */; };
+		D5FD6533277A5E5C00F3BE31 /* Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D5FD6532277A5E5C00F3BE31 /* Dynamic */; };
 		E1E260C850014D6B34B487B0 /* Pods_DIM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D7FFB2FBE6EEBCA807B6A /* Pods_DIM.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5FD6533277A5E5C00F3BE31 /* Dynamic in Frameworks */,
 				E1E260C850014D6B34B487B0 /* Pods_DIM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +113,9 @@
 			dependencies = (
 			);
 			name = DIM;
+			packageProductDependencies = (
+				D5FD6532277A5E5C00F3BE31 /* Dynamic */,
+			);
 			productName = DIM;
 			productReference = 59333BAA25CFF706003392A4 /* DIM.app */;
 			productType = "com.apple.product-type.application";
@@ -140,6 +145,9 @@
 				Base,
 			);
 			mainGroup = CD89F880237E9D9200C436A1;
+			packageReferences = (
+				D5FD6531277A5E5C00F3BE31 /* XCRemoteSwiftPackageReference "Dynamic" */,
+			);
 			productRefGroup = CD89F880237E9D9200C436A1;
 			projectDirPath = "";
 			projectRoot = "";
@@ -439,6 +447,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D5FD6531277A5E5C00F3BE31 /* XCRemoteSwiftPackageReference "Dynamic" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mhdhejazi/Dynamic.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D5FD6532277A5E5C00F3BE31 /* Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5FD6531277A5E5C00F3BE31 /* XCRemoteSwiftPackageReference "Dynamic" */;
+			productName = Dynamic;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD89F881237E9D9200C436A1 /* Project object */;
 }

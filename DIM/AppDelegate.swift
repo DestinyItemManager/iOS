@@ -1,3 +1,4 @@
+import Dynamic
 import UIKit
 import FirebaseCore
 import FirebaseMessaging
@@ -76,6 +77,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Unable to register for remote notifications: \(error.localizedDescription)")
       }
 
+        override func buildMenu(with builder: UIMenuBuilder) {
+            super.buildMenu(with: builder)
+
+            builder.remove(menu: .services)
+            builder.remove(menu: .hide)
+            builder.remove(menu: .window)
+            builder.remove(menu: .file)
+            builder.remove(menu: .edit)
+            builder.remove(menu: .format)
+            builder.remove(menu: .view)
+            builder.remove(menu: .help)
+            
+            builder.insertSibling(UIMenu(
+                title: "",
+                options: .displayInline,
+                children: [
+                    UIKeyCommand(title: "Preferences...",
+                                 action: #selector(openPreferences),
+                                 input: ",",
+                                 modifierFlags: .command),
+                    UICommand(title: "Usage guide",
+                              action: #selector(openWiki)),
+                    UICommand(title: "@ThisIsDIM",
+                              action: #selector(openTwitter))]
+            ), afterMenu: .about)
+        }
+        
+    @objc func openPreferences() {
+        DIM.webView.load(URLRequest(url: URL(string:"https://app.destinyitemmanager.com/settings")!));
+    }
+    @objc func openWiki() {
+        let url = URL(string: "https://destinyitemmanager.fandom.com/wiki/Category:User_Guide")!
+        Dynamic.NSWorkspace.sharedWorkspace.openURL(url)
+    }
+    @objc func openTwitter() {
+        let url = URL(string: "https://twitter.com/ThisIsDIM")!
+        Dynamic.NSWorkspace.sharedWorkspace.openURL(url)
+    }
+
+
       // This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
       // If swizzling is disabled then this function must be implemented so that the APNs token can be paired to
       // the FCM registration token.
@@ -142,3 +183,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       }
       // [END refresh_token]
     }
+
