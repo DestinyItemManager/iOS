@@ -1,4 +1,3 @@
-import Dynamic
 import UIKit
 import FirebaseCore
 import FirebaseMessaging
@@ -109,11 +108,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     @objc func openWiki() {
         let url = URL(string: "https://destinyitemmanager.fandom.com/wiki/Category:User_Guide")!
-        Dynamic.NSWorkspace.sharedWorkspace.openURL(url)
+        
+        UIApplication.shared.open(url)
     }
     @objc func openTwitter() {
         let url = URL(string: "https://twitter.com/ThisIsDIM")!
-        Dynamic.NSWorkspace.sharedWorkspace.openURL(url)
+        UIApplication.shared.open(url)
     }
 
 
