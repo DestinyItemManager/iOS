@@ -5,7 +5,7 @@ struct Cookie {
     var value: String
 }
 
-let gcmMessageIDKey = "00000000000" //pwashellz: update this with actual ID if using Firebase 
+let gcmMessageIDKey = "00000000000" // update this with actual ID if using Firebase 
 
 // URL for first launch
 let rootUrl = URL(string: "https://app.destinyitemmanager.com/index.html?utm_source=homescreen")!

@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        // TODO pwashellz: if we're using Firebase, uncomment this
+        // TODO: if we're using Firebase, uncomment this
         //FirebaseApp.configure()
 
         // [START set_messaging_delegate]
@@ -76,33 +76,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Unable to register for remote notifications: \(error.localizedDescription)")
       }
 
-        override func buildMenu(with builder: UIMenuBuilder) {
-            super.buildMenu(with: builder)
+      override func buildMenu(with builder: UIMenuBuilder) {
+          super.buildMenu(with: builder)
 
-            builder.remove(menu: .services)
-            builder.remove(menu: .hide)
-            builder.remove(menu: .window)
-            builder.remove(menu: .file)
-            builder.remove(menu: .edit)
-            builder.remove(menu: .format)
-            builder.remove(menu: .view)
-            builder.remove(menu: .help)
-            
-            builder.insertSibling(UIMenu(
-                title: "",
-                options: .displayInline,
-                children: [
-                    UIKeyCommand(title: "Preferences...",
-                                 action: #selector(openPreferences),
-                                 input: ",",
-                                 modifierFlags: .command),
-                    UICommand(title: "Usage guide",
-                              action: #selector(openWiki)),
-                    UICommand(title: "@ThisIsDIM",
-                              action: #selector(openTwitter))]
-            ), afterMenu: .about)
-        }
-        
+          builder.remove(menu: .services)
+          builder.remove(menu: .hide)
+          builder.remove(menu: .window)
+          builder.remove(menu: .file)
+          builder.remove(menu: .edit)
+          builder.remove(menu: .format)
+          builder.remove(menu: .view)
+          builder.remove(menu: .help)
+          
+          builder.insertSibling(UIMenu(
+              title: "",
+              options: .displayInline,
+              children: [
+                  UIKeyCommand(title: "Preferences...",
+                                action: #selector(openPreferences),
+                                input: ",",
+                                modifierFlags: .command),
+                  UICommand(title: "Usage guide",
+                            action: #selector(openWiki)),
+                  UICommand(title: "@ThisIsDIM",
+                            action: #selector(openTwitter))]
+          ), afterMenu: .about)
+      }
+      
     @objc func openPreferences() {
         DIM.webView.load(URLRequest(url: URL(string:"https://app.destinyitemmanager.com/settings")!));
     }
@@ -183,4 +183,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       }
       // [END refresh_token]
     }
-
