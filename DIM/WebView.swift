@@ -29,24 +29,14 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.applicationNameForUserAgent = "Safari/604.1"
     #endif
     
-
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
-    
     setCustomCookie(webView: webView)
-
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
     webView.isHidden = true;
-
     webView.navigationDelegate = WKND;
-
     webView.scrollView.bounces = false;
     webView.allowsBackForwardNavigationGestures = false
-    
-
     webView.scrollView.contentInsetAdjustmentBehavior = .never
-
-
     webView.addObserver(NSO, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: NSKeyValueObservingOptions.new, context: nil)
     
     return webView
@@ -180,12 +170,12 @@ extension ViewController: WKUIDelegate {
                         return
                     }
                     else {
+                        // Ignore some hosts that pop up a new webview window
                         let ignoreHost = ignoreOrigins.first(where: { requestHost.range(of: $0) != nil })
                         if (ignoreHost != nil) {
                             decisionHandler(.cancel)
                             return;
                         }
-
                         if (navigationAction.navigationType == .other &&
                             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
                             (navigationAction.targetFrame != nil)
@@ -225,6 +215,7 @@ extension ViewController: WKUIDelegate {
         }
         
     }
+    // Handle javascript: `window.alert(message: String)`
     func webView(_ webView: WKWebView,
         runJavaScriptAlertPanelWithMessage message: String,
         initiatedByFrame frame: WKFrameInfo,
@@ -251,6 +242,7 @@ extension ViewController: WKUIDelegate {
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
+    // Handle javascript: `window.confirm(message: String)`
     func webView(_ webView: WKWebView,
         runJavaScriptConfirmPanelWithMessage message: String,
         initiatedByFrame frame: WKFrameInfo,
@@ -288,6 +280,7 @@ extension ViewController: WKUIDelegate {
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
+    // Handle javascript: `window.prompt(prompt: String, defaultText: String?)`
     func webView(_ webView: WKWebView,
         runJavaScriptTextInputPanelWithPrompt prompt: String,
         defaultText: String?,

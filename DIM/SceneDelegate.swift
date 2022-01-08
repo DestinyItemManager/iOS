@@ -5,27 +5,52 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    // If our app is launched with a universal link, we'll store it in this variable
+    static var universalLinkToLaunch: URL? = nil; 
+    static var shortcutLinkToLaunch: URL? = nil
+
+
+    // This function is called when your app launches.
+    // Check to see if we were launched via a universal link or a shortcut.
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        // See if our app is being launched via universal link.
+        // If so, store that link so we can navigate to it once our webView is initialized.
+        for userActivity in connectionOptions.userActivities {
+            if let universalLink = userActivity.webpageURL {
+                SceneDelegate.universalLinkToLaunch = universalLink;
+                break
+            }
+        }
+
+        // See if we were launched via shortcut
+        if let shortcutUrl = connectionOptions.shortcutItem?.type {            
+            SceneDelegate.shortcutLinkToLaunch = URL.init(string: shortcutUrl)
+        }
     }
 
-    // Handle universal links into our app.
-    // This allows your PWA to open links to your domain, rather than opening in a browser tab.
-    // See https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity,restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    // This function is called when our app is already running and the user clicks a universal link.
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        // Handle universal links into our app when the app is already running.
+        // This allows your PWA to open links to your domain, rather than opening in a browser tab.
+        // For more info about universal links, see https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
+        
         // Ensure we're trying to launch a link.
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let incomingURL = userActivity.webpageURL else {
-            return false
-        }       
+            let universalLink = userActivity.webpageURL else {
+            return
+        }
 
-        // Handle it inside our web view.
-        let handledRequest = URLRequest(url: incomingURL)
-        DIM.webView.load(handledRequest)
-        return true
+        // Handle it inside our web view in a SPA-friendly way.
+        DIM.webView.evaluateJavaScript("location.href = '\(universalLink)'")
+    }
+
+    // This function is called if our app is already loaded and the user activates the app via shortcut
+    func windowScene(_ windowScene: UIWindowScene,
+                     performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+        if let shortcutUrl = URL.init(string: shortcutItem.type) {
+            DIM.webView.evaluateJavaScript("location.href = '\(shortcutUrl)'");
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

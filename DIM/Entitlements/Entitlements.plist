@@ -10,6 +10,10 @@
 		<string>applinks:beta.destinyitemmanager.com</string>
 		<string>applinks:app.dim.gg</string>
 		<string>applinks:beta.dim.gg</string>
+		<string>webcredentials:app.destinyitemmanager.com</string>
+		<string>webcredentials:beta.destinyitemmanager.com</string>
+		<string>webcredentials:app.dim.gg</string>
+		<string>webcredentials:beta.dim.gg</string>
 	</array>
 </dict>
 </plist>
