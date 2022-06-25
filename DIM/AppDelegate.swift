@@ -5,7 +5,7 @@ import FirebaseMessaging
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+
     var window : UIWindow?
 
     func application(_ application: UIApplication,
@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register for remote notifications. This shows a permission dialog on first run, to
         // show the dialog at a more appropriate time move this registration accordingly.
         // [START register_for_notifications]
-   
+
         UNUserNotificationCenter.current().delegate = self
 
 //        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           builder.remove(menu: .format)
           builder.remove(menu: .view)
           builder.remove(menu: .help)
-          
+
           builder.insertSibling(UIMenu(
               title: "",
               options: .displayInline,
@@ -102,13 +102,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             action: #selector(openTwitter))]
           ), afterMenu: .about)
       }
-      
+
     @objc func openPreferences() {
         DIM.webView.load(URLRequest(url: URL(string:"https://app.destinyitemmanager.com/settings")!));
     }
     @objc func openWiki() {
-        let url = URL(string: "https://destinyitemmanager.fandom.com/wiki/Category:User_Guide")!
-        
+        let url = URL(string: "https://github.com/DestinyItemManager/DIM/wiki")!
+
         UIApplication.shared.open(url)
     }
     @objc func openTwitter() {
@@ -175,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       // [START refresh_token]
       func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
-        
+
         let dataDict:[String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
         // TODO: If necessary send token to application server.
