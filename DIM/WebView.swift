@@ -8,26 +8,20 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-
-    userContentController.add(WKSMH, name: "print")
-    userContentController.add(WKSMH, name: "push-subscribe")
-    userContentController.add(WKSMH, name: "push-permission-request")
-    userContentController.add(WKSMH, name: "push-permission-state")
     config.userContentController = userContentController
     
     if #available(iOS 14, *) {
         config.limitsNavigationsToAppBoundDomains = true;
-        
     }
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
-
-    #if !targetEnvironment(macCatalyst)
+    
+#if !targetEnvironment(macCatalyst)
     // Append the safari UA to the end so that Stadia (Google login) works.
     // https://github.com/pwa-builder/pwabuilder-ios/issues/30
     config.applicationNameForUserAgent = "Safari/604.1"
-    #endif
+#endif
     
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     setCustomCookie(webView: webView)
@@ -57,9 +51,9 @@ func setCustomCookie(webView: WKWebView) {
         .secure: "FALSE",
         .expires: NSDate(timeIntervalSinceNow: 31556926)
     ])!
-
+    
     webView.configuration.websiteDataStore.httpCookieStore.setCookie(_platformCookie)
-
+    
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
@@ -74,69 +68,24 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
         switch displayMode {
         case "fullscreen":
             statusBarHeight = 0
-            #if targetEnvironment(macCatalyst)
-                if let titlebar = windowScene.titlebar {
-                    titlebar.titleVisibility = .hidden
-                    titlebar.toolbar = nil
-                    statusBarHeight = 26
-                }
-            #endif
+#if targetEnvironment(macCatalyst)
+            if let titlebar = windowScene.titlebar {
+                titlebar.titleVisibility = .hidden
+                titlebar.toolbar = nil
+                statusBarHeight = 26
+            }
+#endif
             let windowHeight = webviewView.frame.height - statusBarHeight
             return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: windowHeight)
         default:
-            #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
             statusBarHeight = 29
-            #endif
+#endif
             let windowHeight = webviewView.frame.height - statusBarHeight
             return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: windowHeight)
         }
     }
 }
-
-//func createStatusBar(container: UIView) -> UIView {
-//    let app = UIApplication.shared
-//    let statusBarHeight: CGFloat = app.statusBarFrame.size.height
-//
-//    let statusBarView = UIView()
-//    statusBarView.backgroundColor = hexStringToUIColor(hex: statusBarColor)
-//    container.addSubview(statusBarView)
-//
-//    statusBarView.translatesAutoresizingMaskIntoConstraints = false
-//    statusBarView.heightAnchor
-//      .constraint(equalToConstant: statusBarHeight).isActive = true
-//    statusBarView.widthAnchor
-//      .constraint(equalTo: container.widthAnchor, multiplier: 1.0).isActive = true
-//    statusBarView.topAnchor
-//      .constraint(equalTo: container.topAnchor).isActive = true
-//    statusBarView.centerXAnchor
-//      .constraint(equalTo: container.centerXAnchor).isActive = true
-//
-//    statusBarView.isHidden = true
-//
-//    return statusBarView
-//}
-
-//func hexStringToUIColor (hex:String) -> UIColor {
-//    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-//
-//    if (cString.hasPrefix("#")) {
-//        cString.remove(at: cString.startIndex)
-//    }
-//
-//    if ((cString.count) != 6) {
-//        return UIColor.gray
-//    }
-//
-//    var rgbValue:UInt64 = 0
-//    Scanner(string: cString).scanHexInt64(&rgbValue)
-//
-//    return UIColor(
-//        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-//        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-//        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-//        alpha: CGFloat(1.0)
-//    )
-//}
 
 extension ViewController: WKUIDelegate {
     // redirect new tabs to main webview
@@ -188,17 +137,17 @@ extension ViewController: WKUIDelegate {
                         }
                     }
                     
-
+                    
                     if ["http", "https"].contains(requestUrl.scheme?.lowercased() ?? "") {
-                         // Can open with SFSafariViewController
-                         let safariViewController = SFSafariViewController(url: requestUrl)
-                         self.present(safariViewController, animated: true, completion: nil)
-                     } else {
-                         // Scheme is not supported or no scheme is given, use openURL
+                        // Can open with SFSafariViewController
+                        let safariViewController = SFSafariViewController(url: requestUrl)
+                        self.present(safariViewController, animated: true, completion: nil)
+                    } else {
+                        // Scheme is not supported or no scheme is given, use openURL
                         if (UIApplication.shared.canOpenURL(requestUrl)) {
                             UIApplication.shared.open(requestUrl)
                         }
-                     }
+                    }
                     
                 }
             } else {
@@ -217,9 +166,9 @@ extension ViewController: WKUIDelegate {
     }
     // Handle javascript: `window.alert(message: String)`
     func webView(_ webView: WKWebView,
-        runJavaScriptAlertPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping () -> Void) {
+                 runJavaScriptAlertPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping () -> Void) {
         
         // Set the message as the UIAlertController message
         let alert = UIAlertController(
@@ -227,7 +176,7 @@ extension ViewController: WKUIDelegate {
             message: message,
             preferredStyle: .alert
         )
-
+        
         // Add a confirmation action “OK”
         let okAction = UIAlertAction(
             title: "OK",
@@ -238,16 +187,16 @@ extension ViewController: WKUIDelegate {
             }
         )
         alert.addAction(okAction)
-
+        
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
     // Handle javascript: `window.confirm(message: String)`
     func webView(_ webView: WKWebView,
-        runJavaScriptConfirmPanelWithMessage message: String,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping (Bool) -> Void) {
-
+                 runJavaScriptConfirmPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (Bool) -> Void) {
+        
         // Set the message as the UIAlertController message
         let alert = UIAlertController(
             title: nil,
@@ -276,17 +225,17 @@ extension ViewController: WKUIDelegate {
         )
         alert.addAction(cancelAction)
         alert.addAction(okAction)
-
+        
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
     // Handle javascript: `window.prompt(prompt: String, defaultText: String?)`
     func webView(_ webView: WKWebView,
-        runJavaScriptTextInputPanelWithPrompt prompt: String,
-        defaultText: String?,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping (String?) -> Void) {
-
+                 runJavaScriptTextInputPanelWithPrompt prompt: String,
+                 defaultText: String?,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (String?) -> Void) {
+        
         // Set the message as the UIAlertController message
         let alert = UIAlertController(
             title: nil,
@@ -321,7 +270,7 @@ extension ViewController: WKUIDelegate {
         }
         alert.addAction(cancelAction)
         alert.addAction(okAction)
-
+        
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
     }
