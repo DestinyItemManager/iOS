@@ -105,6 +105,7 @@
 		<string>id.twitch.tv</string>
 		<string>accounts.google.com</string>
 		<string>accounts.youtube.com</string>
+		<string>epicgames.com</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
