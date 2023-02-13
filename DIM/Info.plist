@@ -111,24 +111,24 @@
 	<false/>
 	<key>UIApplicationShortcutItems</key>
 	<array>
-			<dict>
-				<key>UIApplicationShortcutItemType</key>
-				<string>https://app.destinyitemmanager.com/vendors</string>
-				<key>UIApplicationShortcutItemTitle</key>
-				<string>Vendors</string>
-			</dict>
-			<dict>
-				<key>UIApplicationShortcutItemType</key>
-				<string>https://app.destinyitemmanager.com/loadouts</string>
-				<key>UIApplicationShortcutItemTitle</key>
-				<string>Loadouts</string>
-			</dict>
-			<dict>
-				<key>UIApplicationShortcutItemType</key>
-				<string>https://app.destinyitemmanager.com/settings</string>
-				<key>UIApplicationShortcutItemTitle</key>
-				<string>Settings</string>
-			</dict>
-		</array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://app.destinyitemmanager.com/vendors</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Vendors</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://app.destinyitemmanager.com/loadouts</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Loadouts</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://app.destinyitemmanager.com/settings</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Settings</string>
+		</dict>
+	</array>
 </dict>
 </plist>

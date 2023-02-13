@@ -7,15 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25D3517E267A48E0002E5DC0 /* GoogleService-Info.plist */; };
 		595F23A525CEFBFE0053416C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F239A25CEFBFD0053416C /* Settings.swift */; };
 		595F23A625CEFBFE0053416C /* Entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 595F239B25CEFBFD0053416C /* Entitlements */; };
 		595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 595F239C25CEFBFD0053416C /* Assets.xcassets */; };
 		595F23A825CEFBFE0053416C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F239D25CEFBFD0053416C /* SceneDelegate.swift */; };
-		595F23AA25CEFBFE0053416C /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F239F25CEFBFE0053416C /* PushNotifications.swift */; };
 		595F23AC25CEFBFE0053416C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A125CEFBFE0053416C /* ViewController.swift */; };
 		595F23AD25CEFBFE0053416C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A225CEFBFE0053416C /* AppDelegate.swift */; };
-		595F23AE25CEFBFE0053416C /* Printer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A325CEFBFE0053416C /* Printer.swift */; };
 		595F23AF25CEFBFE0053416C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A425CEFBFE0053416C /* WebView.swift */; };
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
 		CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */; };
@@ -23,18 +20,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		25D3517E267A48E0002E5DC0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "DIM/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4C1C2162A8048FDF52B2A9D0 /* Pods-DIM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DIM.release.xcconfig"; path = "Target Support Files/Pods-DIM/Pods-DIM.release.xcconfig"; sourceTree = "<group>"; };
 		59333BAA25CFF706003392A4 /* DIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		595F239A25CEFBFD0053416C /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = DIM/Settings.swift; sourceTree = "<group>"; };
 		595F239B25CEFBFD0053416C /* Entitlements */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Entitlements; path = DIM/Entitlements; sourceTree = "<group>"; };
 		595F239C25CEFBFD0053416C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = DIM/Assets.xcassets; sourceTree = "<group>"; };
 		595F239D25CEFBFD0053416C /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = DIM/SceneDelegate.swift; sourceTree = "<group>"; };
-		595F239F25CEFBFE0053416C /* PushNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PushNotifications.swift; path = DIM/PushNotifications.swift; sourceTree = "<group>"; };
 		595F23A025CEFBFE0053416C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = DIM/Info.plist; sourceTree = "<group>"; };
 		595F23A125CEFBFE0053416C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = DIM/ViewController.swift; sourceTree = "<group>"; };
 		595F23A225CEFBFE0053416C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = DIM/AppDelegate.swift; sourceTree = "<group>"; };
-		595F23A325CEFBFE0053416C /* Printer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Printer.swift; path = DIM/Printer.swift; sourceTree = "<group>"; };
 		595F23A425CEFBFE0053416C /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebView.swift; path = DIM/WebView.swift; sourceTree = "<group>"; };
 		BE9D7FFB2FBE6EEBCA807B6A /* Pods_DIM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DIM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE8E5C625AE96C07F8AADED /* Pods-DIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DIM.debug.xcconfig"; path = "Target Support Files/Pods-DIM/Pods-DIM.debug.xcconfig"; sourceTree = "<group>"; };
@@ -78,9 +72,6 @@
 				595F239C25CEFBFD0053416C /* Assets.xcassets */,
 				595F239B25CEFBFD0053416C /* Entitlements */,
 				595F23A025CEFBFE0053416C /* Info.plist */,
-				25D3517E267A48E0002E5DC0 /* GoogleService-Info.plist */,
-				595F23A325CEFBFE0053416C /* Printer.swift */,
-				595F239F25CEFBFE0053416C /* PushNotifications.swift */,
 				595F239D25CEFBFD0053416C /* SceneDelegate.swift */,
 				595F239A25CEFBFD0053416C /* Settings.swift */,
 				595F23A125CEFBFE0053416C /* ViewController.swift */,
@@ -104,15 +95,12 @@
 				CD89F885237E9D9200C436A1 /* Sources */,
 				CD89F886237E9D9200C436A1 /* Frameworks */,
 				CD89F887237E9D9200C436A1 /* Resources */,
-				592CB04773CB45D6CE5DF117 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = DIM;
-			packageProductDependencies = (
-			);
 			productName = DIM;
 			productReference = 59333BAA25CFF706003392A4 /* DIM.app */;
 			productType = "com.apple.product-type.application";
@@ -142,8 +130,6 @@
 				Base,
 			);
 			mainGroup = CD89F880237E9D9200C436A1;
-			packageReferences = (
-			);
 			productRefGroup = CD89F880237E9D9200C436A1;
 			projectDirPath = "";
 			projectRoot = "";
@@ -162,30 +148,12 @@
 				CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */,
 				CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */,
 				595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */,
-				25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		592CB04773CB45D6CE5DF117 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DIM/Pods-DIM-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DIM/Pods-DIM-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DIM/Pods-DIM-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E07DC62CDB59F65280F7057D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -218,9 +186,7 @@
 				595F23AD25CEFBFE0053416C /* AppDelegate.swift in Sources */,
 				595F23A825CEFBFE0053416C /* SceneDelegate.swift in Sources */,
 				595F23A525CEFBFE0053416C /* Settings.swift in Sources */,
-				595F23AE25CEFBFE0053416C /* Printer.swift in Sources */,
 				595F23AC25CEFBFE0053416C /* ViewController.swift in Sources */,
-				595F23AA25CEFBFE0053416C /* PushNotifications.swift in Sources */,
 				595F23AF25CEFBFE0053416C /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
