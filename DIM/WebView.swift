@@ -115,53 +115,53 @@ extension ViewController: WKUIDelegate {
             return
         }
         
-        // If this is app.destinyitemmanager.com
-        if requestHost.range(of: allowedOrigin) != nil {
+        // If this is app.destinyitemmanager.com, just go there
+        if requestHost == allowedOrigin {
             // Open in main webview
             decisionHandler(.allow)
             if !toolbarView.isHidden {
                 toolbarView.isHidden = true
                 webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
             }
-            
+            return
+        }
+    
+        // Allow navigating to auth sites
+        if authOrigins.contains(requestHost) {
+            decisionHandler(.allow)
+            if toolbarView.isHidden {
+                toolbarView.isHidden = false
+                webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
+            }
+            return
+        }
+        
+        // Ignore some hosts that pop up a new webview window
+        if ignoreOrigins.contains(requestHost) {
+            decisionHandler(.cancel)
+            return
+        }
+        
+        // Not sure what this is about
+        if navigationAction.navigationType == .other &&
+            navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
+            navigationAction.targetFrame != nil
+        {
+            decisionHandler(.allow)
+            return
+        }
+        
+        // External links get handled with a popup
+        decisionHandler(.cancel)
+        if ["http", "https"].contains(requestUrl.scheme?.lowercased() ?? "") {
+            // Can open with SFSafariViewController
+            let safariViewController = SFSafariViewController(url: requestUrl)
+            self.present(safariViewController, animated: true, completion: nil)
         } else {
-            // Allow navigating to auth sites
-            if authOrigins.contains(requestHost) {
-                decisionHandler(.allow)
-                if toolbarView.isHidden {
-                    toolbarView.isHidden = false
-                    webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
-                }
-                return
-            // Ignore some hosts that pop up a new webview window
-            } else if ignoreOrigins.contains(requestHost) {
-                decisionHandler(.cancel)
-                return
+            // Scheme is not supported or no scheme is given, use openURL
+            if (UIApplication.shared.canOpenURL(requestUrl)) {
+                UIApplication.shared.open(requestUrl)
             }
-            
-            // Not sure what this is about
-            if navigationAction.navigationType == .other &&
-                navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
-                navigationAction.targetFrame != nil
-            {
-                decisionHandler(.allow)
-                return
-            } else {
-                decisionHandler(.cancel)
-            }
-            
-            // External links
-            if ["http", "https"].contains(requestUrl.scheme?.lowercased() ?? "") {
-                // Can open with SFSafariViewController
-                let safariViewController = SFSafariViewController(url: requestUrl)
-                self.present(safariViewController, animated: true, completion: nil)
-            } else {
-                // Scheme is not supported or no scheme is given, use openURL
-                if (UIApplication.shared.canOpenURL(requestUrl)) {
-                    UIApplication.shared.open(requestUrl)
-                }
-            }
-            
         }
     }
     
