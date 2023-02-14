@@ -57,7 +57,7 @@ func setCustomCookie(webView: WKWebView) {
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
-    if ((toolbarView) != nil) {
+    if (toolbarView) != nil {
         return CGRect(x: 0, y: toolbarView!.frame.height, width: webviewView.frame.width, height: webviewView.frame.height - toolbarView!.frame.height)
     }
     else {
@@ -90,80 +90,81 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
 extension ViewController: WKUIDelegate {
     // redirect new tabs to main webview
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-        if (navigationAction.targetFrame == nil) {
+        if navigationAction.targetFrame == nil {
             webView.load(navigationAction.request)
         }
         return nil
     }
     // restrict navigation to target host, open external links in 3rd party apps
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let requestUrl = navigationAction.request.url{
-            if let requestHost = requestUrl.host {
-                if (requestHost.range(of: allowedOrigin) != nil) {
-                    // Open in main webview
-                    decisionHandler(.allow)
-                    if (!toolbarView.isHidden) {
-                        toolbarView.isHidden = true
-                        webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
-                    }
-                    
-                } else {
-                    let matchingAuthOrigin = authOrigins.first(where: { requestHost.range(of: $0) != nil })
-                    //if (requestHost.range(of: authOrigin_1) != nil || requestHost.range(of: authOrigin_2) != nil || requestHost.range(of: authOrigin_3) != nil || requestHost.range(of: authOrigin_4) != nil) {
-                    if (matchingAuthOrigin != nil) {
-                        decisionHandler(.allow)
-                        if (toolbarView.isHidden) {
-                            toolbarView.isHidden = false
-                            webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
-                        }
-                        return
-                    }
-                    else {
-                        // Ignore some hosts that pop up a new webview window
-                        let ignoreHost = ignoreOrigins.first(where: { requestHost.range(of: $0) != nil })
-                        if (ignoreHost != nil) {
-                            decisionHandler(.cancel)
-                            return;
-                        }
-                        if (navigationAction.navigationType == .other &&
-                            navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
-                            (navigationAction.targetFrame != nil)
-                        ) {
-                            decisionHandler(.allow)
-                            return
-                        }
-                        else {
-                            decisionHandler(.cancel)
-                        }
-                    }
-                    
-                    
-                    if ["http", "https"].contains(requestUrl.scheme?.lowercased() ?? "") {
-                        // Can open with SFSafariViewController
-                        let safariViewController = SFSafariViewController(url: requestUrl)
-                        self.present(safariViewController, animated: true, completion: nil)
-                    } else {
-                        // Scheme is not supported or no scheme is given, use openURL
-                        if (UIApplication.shared.canOpenURL(requestUrl)) {
-                            UIApplication.shared.open(requestUrl)
-                        }
-                    }
-                    
-                }
-            } else {
-                decisionHandler(.cancel)
-                if (navigationAction.request.url?.scheme == "tel" || navigationAction.request.url?.scheme == "mailto" ){
-                    if (UIApplication.shared.canOpenURL(requestUrl)) {
-                        UIApplication.shared.open(requestUrl)
-                    }
-                }
-            }
-        }
-        else {
+        
+        guard let requestUrl = navigationAction.request.url else {
             decisionHandler(.cancel)
+            return
         }
         
+        guard let requestHost = requestUrl.host else {
+            decisionHandler(.cancel)
+            
+            // Support mail/phone links anyway
+            if navigationAction.request.url?.scheme == "tel" || navigationAction.request.url?.scheme == "mailto" {
+                if (UIApplication.shared.canOpenURL(requestUrl)) {
+                    UIApplication.shared.open(requestUrl)
+                }
+            }
+            return
+        }
+        
+        // If this is app.destinyitemmanager.com
+        if requestHost.range(of: allowedOrigin) != nil {
+            // Open in main webview
+            decisionHandler(.allow)
+            if !toolbarView.isHidden {
+                toolbarView.isHidden = true
+                webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
+            }
+            
+        } else {
+            // Allow navigating to auth sites
+            if authOrigins.contains(requestHost) {
+                decisionHandler(.allow)
+                if toolbarView.isHidden {
+                    toolbarView.isHidden = false
+                    webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
+                }
+                return
+            // Ignore some hosts that pop up a new webview window
+            } else if ignoreOrigins.contains(requestHost) {
+                decisionHandler(.cancel)
+                return
+            }
+            
+            // Not sure what this is about
+            if navigationAction.navigationType == .other &&
+                navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
+                navigationAction.targetFrame != nil
+            {
+                decisionHandler(.allow)
+                return
+            } else {
+                decisionHandler(.cancel)
+            }
+            
+            // External links
+            if ["http", "https"].contains(requestUrl.scheme?.lowercased() ?? "") {
+                // Can open with SFSafariViewController
+                let safariViewController = SFSafariViewController(url: requestUrl)
+                self.present(safariViewController, animated: true, completion: nil)
+            } else {
+                // Scheme is not supported or no scheme is given, use openURL
+                if (UIApplication.shared.canOpenURL(requestUrl)) {
+                    UIApplication.shared.open(requestUrl)
+                }
+            }
+            
+        }
     }
+    
     // Handle javascript: `window.alert(message: String)`
     func webView(_ webView: WKWebView,
                  runJavaScriptAlertPanelWithMessage message: String,
