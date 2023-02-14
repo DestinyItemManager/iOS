@@ -97,15 +97,6 @@
 	<key>WKAppBoundDomains</key>
 	<array>
 		<string>app.destinyitemmanager.com</string>
-		<string>www.bungie.net</string>
-		<string>login.live.com</string>
-		<string>ca.account.sony.com</string>
-		<string>my.account.sony.com</string>
-		<string>steamcommunity.com</string>
-		<string>id.twitch.tv</string>
-		<string>accounts.google.com</string>
-		<string>accounts.youtube.com</string>
-		<string>epicgames.com</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>

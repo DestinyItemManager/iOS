@@ -4,7 +4,7 @@ import AuthenticationServices
 import SafariServices
 
 
-func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNavigationDelegate, NSO: NSObject, VC: ViewController) -> WKWebView{
+func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNavigationDelegate, NSO: NSObject, VC: ViewController) -> WKWebView {
     
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
@@ -16,15 +16,14 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
+
+    let bundleInfo = Bundle.main.infoDictionary!
+    let name = bundleInfo["CFBundleDisplayName"] as! String
+    let version = bundleInfo["CFBundleShortVersionString"] as! String
     
-#if !targetEnvironment(macCatalyst)
-    // Append the safari UA to the end so that Stadia (Google login) works.
-    // https://github.com/pwa-builder/pwabuilder-ios/issues/30
-    config.applicationNameForUserAgent = "Safari/604.1"
-#endif
+    config.applicationNameForUserAgent = "\(name) AppStore \(version)"
     
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
-    setCustomCookie(webView: webView)
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     webView.isHidden = true;
     webView.navigationDelegate = WKND;
@@ -40,20 +39,6 @@ func setAppStoreAsReferrer(contentController: WKUserContentController) {
     let scriptSource = "document.referrer = `app-info://platform/ios-store`;"
     let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
     contentController.addUserScript(script);
-}
-
-func setCustomCookie(webView: WKWebView) {
-    let _platformCookie = HTTPCookie(properties: [
-        .domain: rootUrl.host!,
-        .path: "/",
-        .name: platformCookie.name,
-        .value: platformCookie.value,
-        .secure: "FALSE",
-        .expires: NSDate(timeIntervalSinceNow: 31556926)
-    ])!
-    
-    webView.configuration.websiteDataStore.httpCookieStore.setCookie(_platformCookie)
-    
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
@@ -95,9 +80,10 @@ extension ViewController: WKUIDelegate {
         }
         return nil
     }
+    
     // restrict navigation to target host, open external links in 3rd party apps
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        
+                
         guard let requestUrl = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
@@ -125,18 +111,34 @@ extension ViewController: WKUIDelegate {
             }
             return
         }
-    
-        // Allow navigating to auth sites
-        if authOrigins.contains(requestHost) {
-            decisionHandler(.allow)
-            if toolbarView.isHidden {
-                toolbarView.isHidden = false
-                webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: toolbarView)
+        
+        // Handle clicking the bungie login button
+        if requestUrl.absoluteString.hasPrefix(bungieLogin) {
+            decisionHandler(.cancel)
+            let session = ASWebAuthenticationSession(url: requestUrl, callbackURLScheme: "dimauth")
+            { callbackURL, error in
+                if error != nil || callbackURL == nil {
+                    return
+                }
+                
+                guard var urlComponents = URLComponents(url: callbackURL!, resolvingAgainstBaseURL: true) else {
+                    return
+                }
+                // Change the scheme back to https
+                urlComponents.scheme = "https"
+                
+                guard let authURL = urlComponents.url else {
+                    return
+                }
+                print(authURL)
+                webView.load(URLRequest(url: authURL))
             }
+            session.presentationContextProvider = webView.parentViewController as? any ASWebAuthenticationPresentationContextProviding
+            session.start()
             return
         }
         
-        // Not sure what this is about
+        // Allow frames to load
         if navigationAction.navigationType == .other &&
             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
             navigationAction.targetFrame != nil
@@ -268,5 +270,19 @@ extension ViewController: WKUIDelegate {
         
         // Display the NSAlert
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension UIView {
+    var parentViewController: UIViewController? {
+        // Starts from next (As we know self is not a UIViewController).
+        var parentResponder: UIResponder? = self.next
+        while parentResponder != nil {
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
+            }
+            parentResponder = parentResponder?.next
+        }
+        return nil
     }
 }

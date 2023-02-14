@@ -1,4 +1,5 @@
 import UIKit
+import AuthenticationServices
 import WebKit
 
 var webView: WKWebView! = nil
@@ -172,5 +173,11 @@ class ViewController: UIViewController, WKNavigationDelegate {
 extension ViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         
+    }
+}
+
+extension ViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return view.window!
     }
 }
