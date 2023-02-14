@@ -17,7 +17,7 @@ This project was bootstrapped from https://www.pwabuilder.com/ for https://app.d
 
 ## Further reading
 
-More information about getting started https://github.com/pwa-builder/pwabuilder-ios/blob/main/next-steps.md
+More information about iOS & PWA's from PWA builder: https://docs.pwabuilder.com/#/builder/app-store
 
 
 ---
