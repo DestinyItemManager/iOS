@@ -136,12 +136,6 @@ extension ViewController: WKUIDelegate {
             return
         }
         
-        // Ignore some hosts that pop up a new webview window
-        if ignoreOrigins.contains(requestHost) {
-            decisionHandler(.cancel)
-            return
-        }
-        
         // Not sure what this is about
         if navigationAction.navigationType == .other &&
             navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&

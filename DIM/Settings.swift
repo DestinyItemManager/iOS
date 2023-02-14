@@ -16,9 +16,6 @@ let allowedOrigin = "app.destinyitemmanager.com"
 // These should also appear in Info.plist
 let authOrigins: [String] = ["www.bungie.net", "login.live.com", "accounts.google.com", "accounts.youtube.com", "ca.account.sony.com", "my.account.sony.com", "steamcommunity.com", "id.twitch.tv", "epicgames.com"]
 
-// These cause DIM to open a new window that shows "done"
-let ignoreOrigins: [String] = ["tr.snapchat.com", "syndication.twitter.com", "store.steampowered.com", "help.steampowered.com"]
-
 let platformCookie = Cookie(name: "app-platform", value: "iOS App Store")
 
 let displayMode = "fullscreen" //standalone / fullscreen
