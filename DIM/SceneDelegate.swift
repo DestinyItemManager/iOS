@@ -1,12 +1,12 @@
 import UIKit
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
     // If our app is launched with a universal link, we'll store it in this variable
-    static var universalLinkToLaunch: URL? = nil; 
+    static var universalLinkToLaunch: URL? = nil;
     static var shortcutLinkToLaunch: URL? = nil
     
     
@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // See if we were launched via shortcut
-        if let shortcutUrl = connectionOptions.shortcutItem?.type {            
+        if let shortcutUrl = connectionOptions.shortcutItem?.type {
             SceneDelegate.shortcutLinkToLaunch = URL.init(string: shortcutUrl)
         }
     }
