@@ -36,12 +36,6 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     return webView
 }
 
-func setAppStoreAsReferrer(contentController: WKUserContentController) {
-    let scriptSource = "document.referrer = `app-info://platform/ios-store`;"
-    let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-    contentController.addUserScript(script);
-}
-
 func setCustomCookie(webView: WKWebView) {
     let _platformCookie = HTTPCookie(properties: [
         .domain: rootUrl.host!,

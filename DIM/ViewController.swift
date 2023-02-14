@@ -83,7 +83,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         // Was the app launched via a universal link? If so, navigate to that.
         // Otherwise, see if we were launched via shortcut and nav to that.
         // If neither, just nav to the main PWA URL.
-        let launchUrl = SceneDelegate.universalLinkToLaunch ?? SceneDelegate.shortcutLinkToLaunch ?? rootUrl;
+        let launchUrl = SceneDelegate.universalLinkToLaunch ?? rootUrl;
         DIM.webView.load(URLRequest(url: launchUrl))
     }
     
