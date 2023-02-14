@@ -14,6 +14,11 @@ class ViewController: UIViewController, WKNavigationDelegate {
     var toolbarView: UIToolbar!
     var htmlIsLoaded = false;
     
+    // For sharing files
+    let documentInteractionController = UIDocumentInteractionController()
+    
+    // Keep track of downloading files. Maps (weak WKDownload => file URL)
+    var downloadMap: NSMapTable<NSObject, NSURL> = NSMapTable.weakToStrongObjects()
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
         return statusBarStyle;
@@ -120,6 +125,36 @@ class ViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+        if #available(iOS 14.5, *) {
+            if navigationAction.shouldPerformDownload {
+                decisionHandler(.download, preferences)
+            } else {
+                decisionHandler(.allow, preferences)
+            }
+        }
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        if #available(iOS 14.5, *) {
+            if navigationResponse.canShowMIMEType {
+                decisionHandler(.allow)
+            } else {
+                decisionHandler(.download)
+            }
+        }
+    }
+    
+    @available(iOS 14.5, *)
+    func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+        download.delegate = self
+    }
+        
+    @available(iOS 14.5, *)
+    func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
+        download.delegate = self
+    }
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         if (keyPath == #keyPath(WKWebView.estimatedProgress) &&
@@ -167,10 +202,42 @@ class ViewController: UIViewController, WKNavigationDelegate {
     deinit {
         DIM.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
+    
+    // Show a share sheet for a downloaded file
+    func share(url: URL) {
+        documentInteractionController.url = url
+        documentInteractionController.uti = url.typeIdentifier ?? "public.data, public.content"
+        documentInteractionController.name = url.localizedName ?? url.lastPathComponent
+        documentInteractionController.delegate = self
+        documentInteractionController.presentOptionsMenu(from: view.frame, in: view, animated: true)
+    }
 }
 
 extension ViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         
+    }
+}
+
+extension ViewController: UIDocumentInteractionControllerDelegate {
+    // Whenever the share sheet is dismissed
+    func documentInteractionControllerDidDismissOptionsMenu(_ controller: UIDocumentInteractionController) {
+        if let fileUrl = controller.url {
+            do {
+                // Remove the temp directory once we're done sharing it
+                try FileManager.default.removeItem(at: fileUrl.deletingLastPathComponent())
+            } catch {
+                print("Error")
+            }
+        }
+    }
+}
+
+extension URL {
+    var typeIdentifier: String? {
+        return (try? resourceValues(forKeys: [.typeIdentifierKey]))?.typeIdentifier
+    }
+    var localizedName: String? {
+        return (try? resourceValues(forKeys: [.localizedNameKey]))?.localizedName
     }
 }
