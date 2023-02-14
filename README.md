@@ -2,19 +2,19 @@
 
 This project was bootstrapped from https://www.pwabuilder.com/ for https://app.destinyitemmanager.com
 
-## Quick start
+### Quick start
 
 - `git clone https://github.com/DestinyItemManager/iOS`
 - `cd iOS`
 - `pod install` (`sudo gem install cocoapods`, if needed.)
 - `open DIM.xcworkspace`
 
-## Deploying
+### Deploying
 
 - Should be a pared down version of the publish step on the PWA Builder site found here: https://docs.pwabuilder.com/#/builder/app-store?id=publishing
 - Once you have your local machine setup with the certificat/provisioning file/etc you should be able to jump straight to steps 6 -> 8 
 
-## Further reading
+### Further reading
 
 - pwa builder ios repo: https://github.com/pwa-builder/pwabuilder-ios/
 - More information about iOS & PWA's from PWA builder: https://docs.pwabuilder.com/#/builder/app-store
@@ -22,7 +22,7 @@ This project was bootstrapped from https://www.pwabuilder.com/ for https://app.d
 
 ---
 
-# How this was bootstrapped
+### How this was bootstrapped
 1. https://pwabuilder.com/ -- enter domain name.
 2. Click the iOS option, and before hitting generate enter in under "Permitted URLs" in the settings in the dialog popup:
 `www.bungie.net, login.live.com, accounts.google.com, accounts.youtube.com, ca.account.sony.com, my.account.sony.com, steamcommunity.com, id.twitch.tv`
