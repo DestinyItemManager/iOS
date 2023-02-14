@@ -11,7 +11,9 @@ This project was bootstrapped from https://www.pwabuilder.com/ for https://app.d
 
 ## Deploying
 
-Should be a pared down version of [pwabuilder-ios/submit-to-app-store.md](https://github.com/pwa-builder/pwabuilder-ios/blob/main/submit-to-app-store.md)
+- Should be a pared down version of the publish step on the PWA Builder site found here: https://docs.pwabuilder.com/#/builder/app-store?id=publishing
+
+- Once you have your local machine setup with the certificat/provisioning file/etc you should be able to jump straight to steps 6 -> 8 
 
 ## Further reading
 
