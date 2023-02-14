@@ -97,7 +97,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return nil
         }
         // Even if it's a beta URL, load in app
-        urlComponents.host = "app.destinyitemmanager.com"
+        urlComponents.host = allowedOrigin
         
         guard let dimURL = urlComponents.url else {
             return nil
