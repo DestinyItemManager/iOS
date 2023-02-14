@@ -35,12 +35,6 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     return webView
 }
 
-func setAppStoreAsReferrer(contentController: WKUserContentController) {
-    let scriptSource = "document.referrer = `app-info://platform/ios-store`;"
-    let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-    contentController.addUserScript(script);
-}
-
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
     if (toolbarView) != nil {
         return CGRect(x: 0, y: toolbarView!.frame.height, width: webviewView.frame.width, height: webviewView.frame.height - toolbarView!.frame.height)
@@ -68,6 +62,38 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
 #endif
             let windowHeight = webviewView.frame.height - statusBarHeight
             return CGRect(x: 0, y: statusBarHeight, width: webviewView.frame.width, height: windowHeight)
+        }
+    }
+}
+
+@available(iOS 14.5, *)
+extension ViewController: WKDownloadDelegate {    
+    func download(_ download: WKDownload, decideDestinationUsing response: URLResponse, suggestedFilename: String, completionHandler: @escaping (URL?) -> Void) {
+        // First save to a temp directory. This generates a unique temp directory
+        let temporaryDirectoryURL =
+            (try? FileManager.default.url(for: .itemReplacementDirectory,
+                                        in: .userDomainMask,
+                                        appropriateFor: FileManager.default.temporaryDirectory,
+                                        create: true)) ?? FileManager.default.temporaryDirectory
+        // Add our filenam
+        let fileUrl = temporaryDirectoryURL
+                        .appendingPathComponent(suggestedFilename, isDirectory: false)
+        // Remember this download
+        downloadMap.setObject(fileUrl as NSURL, forKey: download)
+        completionHandler(fileUrl)
+            
+    }
+    
+    func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
+        print("Download error \(error)")
+    }
+    
+    func downloadDidFinish(_ download: WKDownload) {
+        // Fish the remembered download from the map. No need to delete it, ARC will handle that
+        if let fileUrl = downloadMap.object(forKey: download) {
+            share(url: fileUrl as URL)
+        } else {
+            print("Unknown download \(download)")
         }
     }
 }

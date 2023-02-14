@@ -1,14 +1,12 @@
 import UIKit
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
     // If our app is launched with a universal link, we'll store it in this variable
-    static var universalLinkToLaunch: URL? = nil; 
-    static var shortcutLinkToLaunch: URL? = nil
-    
+    static var universalLinkToLaunch: URL? = nil
     
     // This function is called when your app launches.
     // Check to see if we were launched via a universal link or a shortcut.
@@ -16,15 +14,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // See if our app is being launched via universal link.
         // If so, store that link so we can navigate to it once our webView is initialized.
         for userActivity in connectionOptions.userActivities {
-            if let universalLink = userActivity.webpageURL {
-                SceneDelegate.universalLinkToLaunch = universalLink;
+            if let universalLink = userActivity.webpageURL, let dimURL = getDIMUrl(url: universalLink) {
+                SceneDelegate.universalLinkToLaunch = dimURL;
                 break
             }
         }
         
         // See if we were launched via shortcut
-        if let shortcutUrl = connectionOptions.shortcutItem?.type {            
-            SceneDelegate.shortcutLinkToLaunch = URL.init(string: shortcutUrl)
+        if let shortcutUrlStr = connectionOptions.shortcutItem?.type,
+            let shortcutUrl = URL.init(string: shortcutUrlStr),
+            let dimURL = getDIMUrl(url: shortcutUrl) {
+            SceneDelegate.universalLinkToLaunch = dimURL
         }
     }
     
@@ -40,8 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        // Handle it inside our web view in a SPA-friendly way.
-        DIM.webView.evaluateJavaScript("location.href = '\(universalLink)'")
+        loadDIMUrl(url: universalLink)
     }
     
     // This function is called if our app is already loaded and the user activates the app via shortcut
@@ -49,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                      performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
         if let shortcutUrl = URL.init(string: shortcutItem.type) {
-            DIM.webView.evaluateJavaScript("location.href = '\(shortcutUrl)'");
+            loadDIMUrl(url: shortcutUrl)
         }
     }
     
@@ -81,6 +80,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
     
+    // Load a DIM URL in an already-running instance of the app
+    func loadDIMUrl(url: URL) {
+        guard let dimURL = getDIMUrl(url: url) else {
+            return
+        }
+        
+        // Handle it inside our web view in a SPA-friendly way.
+        DIM.webView.evaluateJavaScript("location.href = '\(dimURL.absoluteString)'")
+    }
     
+    // Return a version of the input URL that's always on the app.destinyitemmanager.com domain, both as a
+    // security measure and so beta -> app.
+    func getDIMUrl(url: URL) -> URL? {
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return nil
+        }
+        // Even if it's a beta URL, load in app
+        urlComponents.host = allowedOrigin
+        
+        guard let dimURL = urlComponents.url else {
+            return nil
+        }
+        
+        return dimURL
+    }
 }
 
