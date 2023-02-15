@@ -9,19 +9,16 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
     config.userContentController = userContentController
-    
-    if #available(iOS 14, *) {
-        config.limitsNavigationsToAppBoundDomains = true;
-    }
+    config.limitsNavigationsToAppBoundDomains = true
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     config.allowsInlineMediaPlayback = true
     config.preferences.setValue(true, forKey: "standalone")
 
     let bundleInfo = Bundle.main.infoDictionary!
-    let name = bundleInfo["CFBundleDisplayName"] as! String
     let version = bundleInfo["CFBundleShortVersionString"] as! String
     
-    config.applicationNameForUserAgent = "\(name) AppStore \(version)"
+    // This is needed for the DIM web app to recognize this version
+    config.applicationNameForUserAgent = "DIM AppStore \(version)"
     
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -36,7 +33,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
-    if (toolbarView) != nil {
+    if toolbarView != nil {
         return CGRect(x: 0, y: toolbarView!.frame.height, width: webviewView.frame.width, height: webviewView.frame.height - toolbarView!.frame.height)
     }
     else {
@@ -66,7 +63,6 @@ func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
     }
 }
 
-@available(iOS 14.5, *)
 extension ViewController: WKDownloadDelegate {    
     func download(_ download: WKDownload, decideDestinationUsing response: URLResponse, suggestedFilename: String, completionHandler: @escaping (URL?) -> Void) {
         // First save to a temp directory. This generates a unique temp directory
@@ -98,18 +94,54 @@ extension ViewController: WKDownloadDelegate {
     }
 }
 
-extension ViewController: WKUIDelegate {
-    // redirect new tabs to main webview
-    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-        if navigationAction.targetFrame == nil {
-            webView.load(navigationAction.request)
+extension ViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
+        htmlIsLoaded = true;
+        
+        self.setProgress(1.0, true);
+        self.animateConnectionProblem(false);
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            DIM.webView.isHidden = false;
+            self.loadingView.isHidden = true;
+            
+            self.setProgress(0.0, false);
         }
-        return nil
     }
     
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        htmlIsLoaded = false;
+        
+        if (error as NSError)._code != (-999) {
+            webView.isHidden = true;
+            loadingView.isHidden = false;
+            animateConnectionProblem(true);
+            
+            setProgress(0.05, true);
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.setProgress(0.1, true);
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    self.loadRootUrl();
+                }
+            }
+        }
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        if navigationResponse.canShowMIMEType {
+            decisionHandler(.allow)
+        } else {
+            decisionHandler(.download)
+        }
+    }
+        
     // restrict navigation to target host, open external links in 3rd party apps
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-                
+        if navigationAction.shouldPerformDownload {
+            decisionHandler(.download)
+        }
+        
         guard let requestUrl = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
@@ -141,6 +173,7 @@ extension ViewController: WKUIDelegate {
         // Handle clicking the bungie login button
         if requestUrl.absoluteString.hasPrefix(bungieLogin) {
             decisionHandler(.cancel)
+            // DIM's authReturn.ts will redirect to this special dimauth:// scheme to indicate we're done
             let session = ASWebAuthenticationSession(url: requestUrl, callbackURLScheme: "dimauth")
             { callbackURL, error in
                 if error != nil || callbackURL == nil {
@@ -185,6 +218,25 @@ extension ViewController: WKUIDelegate {
                 UIApplication.shared.open(requestUrl)
             }
         }
+    }
+    
+    
+    func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+        download.delegate = self
+    }
+        
+    func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
+        download.delegate = self
+    }
+}
+
+extension ViewController: WKUIDelegate {
+    // redirect new tabs to main webview
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
     }
     
     // Handle javascript: `window.alert(message: String)`
@@ -298,6 +350,19 @@ extension ViewController: WKUIDelegate {
         present(alert, animated: true, completion: nil)
     }
 }
+
+extension ViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        
+    }
+}
+
+extension ViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return view.window!
+    }
+}
+
 
 extension UIView {
     var parentViewController: UIViewController? {

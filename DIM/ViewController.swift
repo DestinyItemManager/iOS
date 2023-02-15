@@ -4,7 +4,7 @@ import WebKit
 
 var webView: WKWebView! = nil
 
-class ViewController: UIViewController, WKNavigationDelegate {
+class ViewController: UIViewController {
     
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
@@ -93,69 +93,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
         DIM.webView.load(URLRequest(url: launchUrl))
     }
     
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
-        htmlIsLoaded = true;
-        
-        self.setProgress(1.0, true);
-        self.animateConnectionProblem(false);
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            DIM.webView.isHidden = false;
-            self.loadingView.isHidden = true;
-            
-            self.setProgress(0.0, false);
-        }
-    }
-    
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        htmlIsLoaded = false;
-        
-        if (error as NSError)._code != (-999) {
-            webView.isHidden = true;
-            loadingView.isHidden = false;
-            animateConnectionProblem(true);
-            
-            setProgress(0.05, true);
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                self.setProgress(0.1, true);
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    self.loadRootUrl();
-                }
-            }
-        }
-    }
-    
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-        if #available(iOS 14.5, *) {
-            if navigationAction.shouldPerformDownload {
-                decisionHandler(.download, preferences)
-            } else {
-                decisionHandler(.allow, preferences)
-            }
-        }
-    }
-    
-    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-        if #available(iOS 14.5, *) {
-            if navigationResponse.canShowMIMEType {
-                decisionHandler(.allow)
-            } else {
-                decisionHandler(.download)
-            }
-        }
-    }
-    
-    @available(iOS 14.5, *)
-    func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
-        download.delegate = self
-    }
-        
-    @available(iOS 14.5, *)
-    func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
-        download.delegate = self
-    }
-    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         if (keyPath == #keyPath(WKWebView.estimatedProgress) &&
@@ -211,19 +148,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
         documentInteractionController.name = url.localizedName ?? url.lastPathComponent
         documentInteractionController.delegate = self
         documentInteractionController.presentOptionsMenu(from: view.frame, in: view, animated: true)
-    }
-}
-
-extension ViewController: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        
-    }
-}
-
-
-extension ViewController: ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return view.window!
     }
 }
 
